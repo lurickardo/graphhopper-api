@@ -4,7 +4,7 @@ const nextConfig = {
 	env: {
 		GRAPHHOPPER_BASE_URL: process.env.GRAPHHOPPER_BASE_URL,
 		GRAPHHOPPER_API_KEY: process.env.GRAPHHOPPER_API_KEY,
-	}
+	},
 };
 
 export default nextConfig;

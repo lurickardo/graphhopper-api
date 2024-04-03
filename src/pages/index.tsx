@@ -7,6 +7,13 @@ import Button from "./components/Button";
 import { useState } from "react";
 import Modal from "./components/Modal";
 import { graphhopperAPI } from "@/providers/apis";
+import {
+  formatLocationData,
+  metersToKilometer,
+  metersToMiles,
+  milisecondsToTime,
+} from "@/config/utils";
+import Spinner from "./components/Spinner";
 
 const noto = Noto_Sans_Lao({ subsets: ["latin"] });
 
@@ -33,6 +40,7 @@ type TravelFormSchema = z.infer<typeof travelFormSchema>;
 
 export default function Home() {
   const [contentModalRoute, setContentModalRoute] = useState(<div />);
+  const [vehicleForm, setVehicleForm] = useState<VehiclesType>("car");
   const [openRouteModal, setOpenRouteModal] = useState(false);
   const {
     register,
@@ -42,20 +50,63 @@ export default function Home() {
     resolver: zodResolver(travelFormSchema),
   });
 
-  const submitRoute = async (formData: any) => {
-    console.log(formData);
-    const a = await graphhopperAPI.get("/route", {
-      params: { q: formData.origin, limit: 1 },
+  const submitRoute = async (travelForm: TravelFormSchema) => {
+    setOpenRouteModal(true);
+    setContentModalRoute(<Spinner color="blue" />);
+    const [{ data: originGeocode }, { data: destinationGeocode }] =
+      await Promise.all([
+        graphhopperAPI.get("/geocode", {
+          params: { q: travelForm.origin, limit: 1 },
+        }),
+        graphhopperAPI.get("/geocode", {
+          params: { q: travelForm.destination, limit: 1 },
+        }),
+      ]);
+
+    const origin = formatLocationData(originGeocode);
+
+    const destination = formatLocationData(destinationGeocode);
+
+    const { data: routes } = await graphhopperAPI.post("/route", {
+      points: [
+        [origin.lng, origin.lat],
+        [destination.lng, destination.lat],
+      ],
+      profile: vehicleForm,
     });
 
-    setContentModalRoute(<div>test</div>);
-    setOpenRouteModal(true);
+    setContentModalRoute(
+      <div>
+        <span className="mb-8">
+          Direções de {origin.name} - {origin.state} em {origin.country} para{" "}
+          {destination.name} - {destination.state} em {destination.country} de
+          {" carro"}
+        </span>
+        <br />
+        <span className="mb-8">
+          Distância Percorrida: {metersToMiles(routes.paths[0].distance)} milhas
+          / {metersToKilometer(routes.paths[0].distance)} km Duração da viagem:
+          {` ${milisecondsToTime(routes.paths[0].time)}`}
+        </span>
+        <br />
+        <ul role="list" className="divide-y divide-gray-100">
+          {routes.paths[0].instructions.map((instruction: any) => {
+            return (
+              <div>
+                {instruction.text} ({metersToKilometer(instruction.distance)} km
+                / {metersToMiles(instruction.distance)} milhas)
+              </div>
+            );
+          })}
+        </ul>
+      </div>,
+    );
   };
   return (
     <main
-      className={`flex justify-center items-center min-h-screen min-w-screen bg-slate-950 ${noto.className}`}
+      className={`min-w-screen flex min-h-screen items-center justify-center bg-slate-950 ${noto.className}`}
     >
-      <section className="rounded-xl min-w-screen-2xl p-5 bg-slate-900">
+      <section className="min-w-screen-2xl rounded-xl bg-slate-900 p-5">
         <div className="flex flex-col items-center text-center  sm:mx-auto sm:w-full sm:max-w-sm">
           <Image
             width={100}
@@ -85,17 +136,17 @@ export default function Home() {
                 <input
                   type="text"
                   id="input-origin"
-                  className="block w-full h-10 pl-8 pr-3 mt-1 text-sm text-gray-700 border focus:outline-none rounded shadow-sm focus:border-blue-500"
+                  className="mt-1 block h-10 w-full rounded border pl-8 pr-3 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
                   placeholder="Digite sua origem"
                   {...register("origin")}
                 />
-                <span className="absolute inset-y-0 left-0 flex items-center justify-center ml-2">
+                <span className="absolute inset-y-0 left-0 ml-2 flex items-center justify-center">
                   <Image
                     width={100}
                     height={100}
                     src="/icons/origin.svg"
                     alt=""
-                    className="w-4 h-4 text-blue-400 pointer-events-none"
+                    className="pointer-events-none h-4 w-4 text-blue-400"
                   />
                 </span>
               </div>
@@ -116,17 +167,17 @@ export default function Home() {
                 <input
                   type="text"
                   id="input-destination"
-                  className="block w-full h-10 pl-8 pr-3 mt-1 text-sm text-gray-700 border focus:outline-none rounded shadow-sm focus:border-blue-500"
+                  className="mt-1 block h-10 w-full rounded border pl-8 pr-3 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
                   placeholder="Digite seu destino"
                   {...register("destination")}
                 />
-                <span className="absolute inset-y-0 left-0 flex items-center justify-center ml-2">
+                <span className="absolute inset-y-0 left-0 ml-2 flex items-center justify-center">
                   <Image
                     width={100}
                     height={100}
                     src="/icons/destination.svg"
                     alt=""
-                    className="w-4 h-4 text-blue-400 pointer-events-none"
+                    className="pointer-events-none h-4 w-4 text-blue-400"
                   />
                 </span>
               </div>
@@ -136,7 +187,7 @@ export default function Home() {
                 </p>
               )}
             </div>
-            <div className="flex h-full justify-center items-center rounded-md px-4 py-1.5">
+            <div className="flex h-full items-center justify-center rounded-md px-4 py-1.5">
               <Button layout="approved" success>
                 Gerar rota
               </Button>
