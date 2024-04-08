@@ -191,7 +191,7 @@ export default function Home() {
             </div>
             <label
               htmlFor="input-size"
-              className="block text-lg font-medium text-gray-700 dark:text-gray-100"
+              className="text-center block text-lg font-medium text-gray-700 dark:text-gray-100"
             >
               Meio de transporte
             </label>
