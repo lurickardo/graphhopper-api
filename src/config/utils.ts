@@ -30,3 +30,25 @@ export const milisecondsToTime = (miliseconds: number): string => {
 
   return `${hours}h ${minutes}m ${seconds}s`;
 };
+
+const translationDict: { [key: string]: string } = {
+  "Keep": "Siga",
+  "right": "à direita",
+  "onto": "em direção a",
+  "Turn": "Vire",
+  "left": "à esquerda",
+  "Arrive": "Chegue",
+  "at": "ao",
+  "destination": "destino",
+  "and": "e",
+  "drive": "dirija",
+  "toward": "em direção a",
+};
+
+export const translateWords = (sentence: string): string => {
+  const englishWords = Object.keys(translationDict).join('|');
+  const regexPattern = new RegExp(`\\b(?:${englishWords})\\b`, 'g');
+  return sentence.replace(regexPattern, match => {
+    return translationDict[match] || match;
+  });
+}

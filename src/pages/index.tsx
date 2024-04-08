@@ -14,6 +14,7 @@ import {
   milisecondsToTime,
 } from "@/config/utils";
 import Spinner from "./components/Spinner";
+import ContentRouteModal from "./components/ContentRouteModal";
 
 const noto = Noto_Sans_Lao({ subsets: ["latin"] });
 
@@ -38,6 +39,10 @@ const travelFormSchema = z.object({
 
 type TravelFormSchema = z.infer<typeof travelFormSchema>;
 
+type CacheInputForm = {
+  inputForm: { origin: string; destination: string; vehicleForm: string };
+};
+
 export default function Home() {
   const [contentModalRoute, setContentModalRoute] = useState(<div />);
   const [vehicleForm, setVehicleForm] = useState<VehiclesType>("car");
@@ -51,56 +56,56 @@ export default function Home() {
   });
 
   const submitRoute = async (travelForm: TravelFormSchema) => {
-    setOpenRouteModal(true);
-    setContentModalRoute(<Spinner color="blue" />);
-    const [{ data: originGeocode }, { data: destinationGeocode }] =
-      await Promise.all([
-        graphhopperAPI.get("/geocode", {
-          params: { q: travelForm.origin, limit: 1 },
-        }),
-        graphhopperAPI.get("/geocode", {
-          params: { q: travelForm.destination, limit: 1 },
-        }),
-      ]);
+    try {
+      setOpenRouteModal(true);
+      setContentModalRoute(<Spinner color="blue" />);
 
-    const origin = formatLocationData(originGeocode);
+      const [{ data: originGeocode }, { data: destinationGeocode }] =
+        await Promise.all([
+          graphhopperAPI.get("/geocode", {
+            params: { q: travelForm.origin, limit: 1 },
+          }),
+          graphhopperAPI.get("/geocode", {
+            params: { q: travelForm.destination, limit: 1 },
+          }),
+        ]);
 
-    const destination = formatLocationData(destinationGeocode);
+      const origin = formatLocationData(originGeocode);
 
-    const { data: routes } = await graphhopperAPI.post("/route", {
-      points: [
-        [origin.lng, origin.lat],
-        [destination.lng, destination.lat],
-      ],
-      profile: vehicleForm,
-    });
+      const destination = formatLocationData(destinationGeocode);
 
-    setContentModalRoute(
-      <div>
-        <span className="mb-8">
-          Direções de {origin.name} - {origin.state} em {origin.country} para{" "}
-          {destination.name} - {destination.state} em {destination.country} de
-          {" carro"}
-        </span>
-        <br />
-        <span className="mb-8">
-          Distância Percorrida: {metersToMiles(routes.paths[0].distance)} milhas
-          / {metersToKilometer(routes.paths[0].distance)} km Duração da viagem:
-          {` ${milisecondsToTime(routes.paths[0].time)}`}
-        </span>
-        <br />
-        <ul role="list" className="divide-y divide-gray-100">
-          {routes.paths[0].instructions.map((instruction: any) => {
-            return (
-              <div>
-                {instruction.text} ({metersToKilometer(instruction.distance)} km
-                / {metersToMiles(instruction.distance)} milhas)
-              </div>
-            );
-          })}
-        </ul>
-      </div>,
-    );
+      const { data: routes } = await graphhopperAPI.post("/route", {
+        points: [
+          [origin.lng, origin.lat],
+          [destination.lng, destination.lat],
+        ],
+        profile: vehicleForm,
+      });
+
+      const distance = {
+        miles: metersToMiles(routes.paths[0].distance),
+        km: metersToKilometer(routes.paths[0].distance),
+      };
+
+      const duration = milisecondsToTime(routes.paths[0].time);
+
+      setContentModalRoute(
+        <ContentRouteModal
+          origin={origin}
+          destination={destination}
+          vehicle={vehicleForm}
+          distance={distance}
+          duration={duration}
+          instructions={routes.paths[0].instructions}
+        />
+      );
+    } catch (error) {
+      setContentModalRoute(
+        <div className="mt-2 text-1xl font-bold text-red-600 dark:text-red-500">
+          Erro ao buscar informações de viagem.
+        </div>
+      );
+    }
   };
   return (
     <main
