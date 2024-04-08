@@ -1,4 +1,3 @@
-import { CarFront } from "lucide-react";
 import Button from "./Button";
 import React from "react";
 

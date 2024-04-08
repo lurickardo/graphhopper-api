@@ -1,4 +1,4 @@
-import { MapPin, MapPinned, Locate, ChevronsDown } from "lucide-react";
+import { MapPin, Locate, ChevronsDown } from "lucide-react";
 import {
   metersToKilometer,
   metersToMiles,
