@@ -32,6 +32,9 @@ export const milisecondsToTime = (miliseconds: number): string => {
 };
 
 const translationDict: { [key: string]: string } = {
+  "car": "carro",
+  "bike": "bicicleta",
+  "foot": "a pé",
   "Keep": "Siga",
   "right": "à direita",
   "onto": "em direção a",

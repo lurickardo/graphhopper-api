@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Bike, CarFront, Footprints } from "lucide-react";
 import z from "zod";
-import Button from "./components/Button";
 import { IconButton } from "./components/IconButton";
 import { useState } from "react";
 import Modal from "./components/Modal";
@@ -197,21 +196,15 @@ export default function Home() {
               Meio de transporte
             </label>
             <div className="flex h-full items-center justify-center px-5 py-1.5 gap-2">
-              <IconButton>
+              <IconButton onClick={() => setVehicleForm("car")}>
                 <CarFront></CarFront>
               </IconButton>
-              <IconButton>
+              <IconButton onClick={() => setVehicleForm("bike")}>
                 <Bike></Bike>
               </IconButton>
-              <IconButton>
+              <IconButton onClick={() => setVehicleForm("foot")}>
                 <Footprints></Footprints>
               </IconButton>
-            </div>
-
-            <div className="flex h-full items-center justify-center rounded-md px-4 py-1.5">
-              <Button layout="approved" success>
-                Gerar rota
-              </Button>
             </div>
           </form>
         </div>

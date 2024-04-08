@@ -32,8 +32,9 @@ export default function ContentRouteModal({
     <div>
       <span className="mb-8">
         Direções de {origin.name} - {origin.state} em {origin.country} para{" "}
-        {destination.name} - {destination.state} em {destination.country} de
-        {` ${vehicle}`}
+        {destination.name} - {destination.state} em {destination.country}{" "}
+        {vehicle === "foot" ? "" : "de"}
+        {` ${translateWords(vehicle)}`}
       </span>
       <br />
       <span className="mb-8">
