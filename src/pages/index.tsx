@@ -2,8 +2,10 @@ import Image from "next/image";
 import { Noto_Sans_Lao } from "next/font/google";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Bike, CarFront, Footprints } from "lucide-react";
 import z from "zod";
 import Button from "./components/Button";
+import { IconButton } from "./components/IconButton";
 import { useState } from "react";
 import Modal from "./components/Modal";
 import { graphhopperAPI } from "@/providers/apis";
@@ -188,6 +190,24 @@ export default function Home() {
                 </p>
               )}
             </div>
+            <label
+              htmlFor="input-size"
+              className="block text-lg font-medium text-gray-700 dark:text-gray-100"
+            >
+              Meio de transporte
+            </label>
+            <div className="flex h-full items-center justify-center px-5 py-1.5 gap-2">
+              <IconButton>
+                <CarFront></CarFront>
+              </IconButton>
+              <IconButton>
+                <Bike></Bike>
+              </IconButton>
+              <IconButton>
+                <Footprints></Footprints>
+              </IconButton>
+            </div>
+
             <div className="flex h-full items-center justify-center rounded-md px-4 py-1.5">
               <Button layout="approved" success>
                 Gerar rota
