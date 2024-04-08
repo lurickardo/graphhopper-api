@@ -1,3 +1,4 @@
+import { MapPin, MapPinned, Locate, ChevronsDown } from "lucide-react";
 import {
   metersToKilometer,
   metersToMiles,
@@ -40,11 +41,26 @@ export default function ContentRouteModal({
         da viagem:
         {duration}
       </span>
-      <br />
-      <ul role="list" className="divide-y divide-gray-100">
+      <ul role="list" className="divide-y divide-gray-100 py-5">
         {instructions.map((instruction: Instruction, key: number) => {
+          let Icon;
+          let iconClass = "";
+          if (key === 0) {
+            Icon = Locate;
+            iconClass = "locate";
+          } else if (key === instructions.length - 1) {
+            Icon = MapPin;
+            iconClass = "map-pin-last";
+          } else {
+            Icon = ChevronsDown;
+            iconClass = "chevrons-down";
+          }
           return (
-            <div key={`${key}-${instruction.street_name}`}>
+            <div
+              key={`${key}-${instruction.street_name}`}
+              className={`py-3 icon-container ${iconClass}`}
+            >
+              <Icon className="inline-block mr-2" />
               {translateWords(instruction.text)} (
               {metersToKilometer(instruction.distance)} km /{" "}
               {metersToMiles(instruction.distance)} milhas)

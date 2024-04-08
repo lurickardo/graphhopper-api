@@ -26,7 +26,7 @@ export default function Modal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none ">
         <div className={`${modalLayoutClass}`}>
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-slate-800 shadow-lg outline-none focus:outline-none">
             <div className="items-start justify-between rounded-t border-b border-solid border-slate-500 p-3">
