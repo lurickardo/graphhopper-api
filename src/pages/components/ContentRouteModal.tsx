@@ -1,7 +1,6 @@
 import {
   metersToKilometer,
   metersToMiles,
-  milisecondsToTime,
   translateWords,
 } from "@/config/utils";
 

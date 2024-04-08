@@ -39,10 +39,6 @@ const travelFormSchema = z.object({
 
 type TravelFormSchema = z.infer<typeof travelFormSchema>;
 
-type CacheInputForm = {
-  inputForm: { origin: string; destination: string; vehicleForm: string };
-};
-
 export default function Home() {
   const [contentModalRoute, setContentModalRoute] = useState(<div />);
   const [vehicleForm, setVehicleForm] = useState<VehiclesType>("car");
