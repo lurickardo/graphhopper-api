@@ -117,7 +117,7 @@ export default function Home() {
 						alt=""
 						className="max-w-[100px]"
 					/>
-					<h2 className="mb-5 text-center text-2xl font-bold leading-9 tracking-tight text-white">
+					<h2 className="mb-5 text-center text-2xl font-bold leading-9 tracking-tight text-white dark:text-white-500">
 						Pesquisar informações de viagem
 					</h2>
 				</div>
@@ -130,7 +130,7 @@ export default function Home() {
 						<div>
 							<label
 								htmlFor="input-size"
-								className="block text-lg font-medium text-gray-700 dark:text-gray-100"
+								className="block text-lg font-medium text-white dark:text-white-500"
 							>
 								Origem
 							</label>
@@ -161,7 +161,7 @@ export default function Home() {
 						<div>
 							<label
 								htmlFor="input-size"
-								className="block text-lg font-medium text-gray-700 dark:text-gray-100"
+								className="block text-lg font-medium text-white dark:text-white-500"
 							>
 								Destino
 							</label>
@@ -191,7 +191,7 @@ export default function Home() {
 						</div>
 						<label
 							htmlFor="input-size"
-							className="text-center block text-lg font-medium text-gray-700 dark:text-gray-100"
+							className="text-center block text-lg font-medium text-white dark:text-white-500"
 						>
 							Meio de transporte
 						</label>
